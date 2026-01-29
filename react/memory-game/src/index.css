@@ -1,0 +1,251 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: "Arial", sans-serif;
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  padding: 1rem;
+  height: 100%;
+  /* SEE: https://coolors.co/gradients */
+  background: hsla(154, 100%, 76%, 1);
+
+  background: linear-gradient(
+    90deg,
+    hsla(154, 100%, 76%, 1) 0%,
+    hsla(234, 100%, 83%, 1) 50%,
+    hsla(288, 100%, 81%, 1) 100%
+  );
+
+  background: -moz-linear-gradient(
+    90deg,
+    hsla(154, 100%, 76%, 1) 0%,
+    hsla(234, 100%, 83%, 1) 50%,
+    hsla(288, 100%, 81%, 1) 100%
+  );
+
+  background: -webkit-linear-gradient(
+    90deg,
+    hsla(154, 100%, 76%, 1) 0%,
+    hsla(234, 100%, 83%, 1) 50%,
+    hsla(288, 100%, 81%, 1) 100%
+  );
+
+  filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#84FFC9", endColorstr="#AAB2FF", GradientType=1 );
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+:root {
+  --card-size: 8rem;
+  --first-player-color: #f72585;
+  --second-player-color: #a1ff0a;
+  --grid-size: 4;
+  --grid-gap: 1rem;
+}
+
+@media screen and (max-width: 800px) {
+  :root {
+    --card-size: 22vw;
+    --grid-gap: 0.5rem;
+  }
+}
+
+header {
+  text-align: center;
+}
+
+button {
+  border: 0.125rem solid black;
+  appearance: none;
+  background: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 2rem;
+  padding: 0 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.25rem;
+  font-weight: bold;
+}
+
+button:hover {
+  text-decoration: underline;
+}
+
+h1 {
+  text-transform: uppercase;
+  letter-spacing: 0.25rem;
+  margin: 1rem 0 0 0;
+  font-size: 2.5rem;
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.5);
+  @media screen and (max-width: 800px) {
+    font-size: 2rem;
+  }
+}
+
+.player-1 {
+  color: var(--first-player-color);
+}
+
+.player-2 {
+  color: var(--second-player-color);
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.board {
+  flex: 1;
+  display: inline-grid;
+  place-items: center;
+  gap: var(--grid-gap);
+  grid-template-rows: repeat(var(--grid-size), 1fr);
+  grid-template-columns: repeat(var(--grid-size), 1fr);
+}
+
+.card {
+  width: var(--card-size);
+  height: var(--card-size);
+  position: relative;
+  perspective: calc(var(--card-size) * 1.5);
+}
+
+.disabled {
+  cursor: not-allowed;
+}
+
+.card:hover .content {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.content {
+  border: 0.4rem solid black;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: transform 1s;
+  transform-style: preserve-3d;
+  @media screen and (max-width: 800px) {
+    border-width: 0.2rem;
+  }
+}
+
+.player-1 .content {
+  border-color: var(--first-player-color);
+}
+
+.player-2 .content {
+  border-color: var(--second-player-color);
+}
+
+.front,
+.back {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  backface-visibility: hidden;
+}
+
+.front {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.revealed .content {
+  cursor: not-allowed;
+  transform: rotateY(180deg);
+  transition: transform 0.5s, border-color 0.25s ease-in-out;
+}
+
+.back {
+  transform: rotateY(180deg);
+}
+
+.back img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.shaking {
+  animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  20%,
+  80% {
+    transform: translate3d(3px, 0, 0);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-6px, 0, 0);
+  }
+
+  40%,
+  60% {
+    transform: translate3d(6px, 0, 0);
+  }
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.modal.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  /* SEE: https://getcssscan.com/css-box-shadow-examples */
+  box-shadow: rgb(85, 91, 255) 0px 0px 0px 3px, rgb(31, 193, 27) 0px 0px 0px 6px,
+    rgb(255, 217, 19) 0px 0px 0px 9px, rgb(255, 156, 85) 0px 0px 0px 12px,
+    rgb(255, 85, 85) 0px 0px 0px 15px;
+}
+
+.modal-content h2 {
+  text-transform: uppercase;
+  letter-spacing: 0.25rem;
+}
+
+.status-1 .modal-content {
+  background-color: var(--first-player-color);
+}
+.status-2 .modal-content {
+  background-color: var(--second-player-color);
+}
